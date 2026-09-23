@@ -1,0 +1,59 @@
+#!/usr/bin/env php
+
+<?php
+$autoloadPath1 = __DIR__ . '/../../../autoload.php';
+$autoloadPath2 = __DIR__ . '/../vendor/autoload.php';
+if (file_exists($autoloadPath1)) {
+    require_once $autoloadPath1;
+} else {
+    require_once $autoloadPath2;
+}
+
+
+use function cli\line;
+use function cli\prompt;
+
+
+line('Welcome to the Brain Games!');
+$name = prompt('May I have your name?');
+line('Hello, %s!', $name);
+line('Answer "yes" if the number is even, otherwise answer "no".');
+
+$result = true;
+$random = function () {
+    return rand(1, 100);
+};
+for ($i = 0; $i < 3; $i++) {
+    $number = $random();
+    $answer = prompt('Question: %s', $number);
+    $result = is_right($number, $answer);
+    if (!$result) {
+        break;
+    }
+}
+
+if ($result) {
+    line('Congratulations, %s!', $name);
+} else {
+    line("Let's try again, %s!", $name);
+}
+
+
+function right($number)
+{
+    return ($number % 2 === 0) ? 'yes' : 'no';
+}
+
+function is_right($number, $answer)
+{
+    $right_answer = right($number);
+    if ($right_answer === ($answer)) {
+        line('Correct!');
+        return true;
+    } else {
+        line("'%s' is wrong answer ;(. Correct answer was '%s'.", $answer, $right_answer);
+        return false;
+    }
+}
+
+
